@@ -1,0 +1,6 @@
+/models/
+/example/
+/output/
+*.egg-info/
+__pycache__/
+.venv/

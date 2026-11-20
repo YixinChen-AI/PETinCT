@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "petinct"
+version = "0.1.0"
+description = "Whole-body FDG PET prediction from CT"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.6,<3", "monai==1.5.2", "nibabel>=5.2,<6", "numpy>=1.24,<3"]
+
+[project.scripts]
+petinct = "petinct.inference.predict:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
