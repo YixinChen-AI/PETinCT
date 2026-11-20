@@ -220,6 +220,19 @@ def _parse_spacing(value: str) -> tuple[float, float, float]:
     return parts
 
 
+def anatomy_target_source_ids(
+    ontology_rows: list[dict[str, str]], target_host: str
+) -> frozenset[int]:
+    return frozenset(
+        int(row["label_id"])
+        for row in ontology_rows
+        if target_host in (
+            row.get("target_host", "").strip().lower(),
+            row.get("label_name", "").strip().lower(),
+        )
+    )
+
+
 def _load_distribution_condition(
     root: Path,
     case_id: str,
@@ -628,16 +641,7 @@ def main() -> None:
             for model_id, source_id in enumerate(source_ids, start=1)
         }
         if crop_target_host:
-            crop_source_ids = {
-                int(row["label_id"])
-                for row in ontology_rows
-                if (
-                    str(row.get("target_host", "")).strip().lower()
-                    == crop_target_host
-                    or str(row.get("label_name", "")).strip().lower()
-                    == crop_target_host
-                )
-            }
+            crop_source_ids = anatomy_target_source_ids(ontology_rows, crop_target_host)
             if not crop_source_ids:
                 raise ValueError(
                     "no anatomy labels resolve to crop target host "

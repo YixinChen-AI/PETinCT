@@ -12,7 +12,11 @@ from pathlib import Path
 import nibabel as nib
 import numpy as np
 
-from petinct.inference.generate_ctpet_coarse_cache import _atomic_nifti, file_sha256
+from petinct.inference.generate_ctpet_coarse_cache import (
+    _atomic_nifti,
+    anatomy_target_source_ids,
+    file_sha256,
+)
 
 
 def run_module(name: str, *arguments: Path | str) -> None:
@@ -73,13 +77,9 @@ def predict(
     brain_path = work / "brain" / "input.nii.gz"
     if brain_path.is_file():
         with anatomy_map.open(newline="", encoding="utf-8") as stream:
-            brain_ids = [
-                int(row["label_id"])
-                for row in csv.DictReader(stream)
-                if "brain" in (row["target_host"].strip().lower(), row["label_name"].strip().lower())
-            ]
+            brain_ids = anatomy_target_source_ids(list(csv.DictReader(stream)), "brain")
         labels = np.asanyarray(nib.load(anatomy).dataobj)
-        brain_mask = np.isin(labels, brain_ids)
+        brain_mask = np.isin(labels, tuple(brain_ids))
         brain_pet = nib.load(brain_path).get_fdata(dtype=np.float32)
         pet[brain_mask] = brain_pet[brain_mask]
     _atomic_nifti(output, pet, image)
