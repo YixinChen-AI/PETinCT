@@ -2,6 +2,8 @@
 
 Generate a whole-body FDG PET prediction from CT.
 
+![Coronal CT slice and maximum-intensity projection of the predicted PET](preview.png)
+
 ## Run the example
 
 Use Python 3.10 or later and a CUDA-enabled NVIDIA GPU. Download `petinct-models.tar.gz` and `petinct-example.tar.gz` from the [demo release](../../releases/tag/demo) into the repository directory.
